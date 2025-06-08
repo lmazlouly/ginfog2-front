@@ -41,7 +41,12 @@ export default function RegisterPage() {
     if (Object.keys(validationErrors).length === 0) {
       setSubmitted(true);
       // TODO: Integrate with backend registration logic here
-      alert("Registration successful! (This is a placeholder)");
+      register({
+        email: form.email,
+        username: form.name,
+        password: form.password,
+        is_active: true,
+      }).then((user) => alert("Registration successful!"));
     }
   };
 
