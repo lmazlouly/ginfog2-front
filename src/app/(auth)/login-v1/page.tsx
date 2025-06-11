@@ -10,7 +10,7 @@ export default function LoginPage() {
   const router = useRouter();
   
   useEffect(() => {
-    document.title = "Login | Marzano"
+    document.title = "Login | EcoSys"
     getApiAuthWhoami().then(() => {
       router.push("/dashboard")
     }).catch(() => {});
@@ -22,7 +22,7 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-zinc-900" />
         <div className="relative z-20 flex items-center text-lg font-medium">
           <PersonStandingIcon className="mr-2 h-6 w-6" />
-          Marzano
+          EcoSys
         </div>
       </div>
       <div className="lg:p-8">

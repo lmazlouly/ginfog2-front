@@ -7,7 +7,7 @@ export function SiteFooter() {
         <div className="flex flex-col items-center gap-2 md:flex-row">
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
             <span>Powered by</span>
-            <span className="font-semibold">Marzano Research</span>
+            <span className="font-semibold">EcoSys Research</span>
           </div>
         </div>
         <div className="flex flex-col items-center gap-2 md:flex-row md:justify-end">

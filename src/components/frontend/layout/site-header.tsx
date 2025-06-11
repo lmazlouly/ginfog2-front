@@ -26,7 +26,7 @@ export function SiteHeader() {
                 <path d="M18.26 15.7c-3.2 2.7-8.4 2.3-11.2-.7-2.1-2.2-2.6-5.3-1.5-7.9l1 .3c-1 2.3-.5 5.1 1.3 7 2.4 2.6 7 2.8 9.6.6.3-.2.5-.5.8-.7l.8.7c-.3.2-.5.5-.8.7z"/>
               </svg>
             </div>
-            <span className="text-xl font-bold tracking-tight text-green-800">EcoTrack</span>
+            <span className="text-xl font-bold tracking-tight text-green-800">EcoSys</span>
           </Link>
         </div>
 

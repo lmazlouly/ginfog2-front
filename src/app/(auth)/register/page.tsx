@@ -2,8 +2,10 @@
 
 import { register } from "@/lib/api/generated/auth/auth";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -46,7 +48,10 @@ export default function RegisterPage() {
         username: form.name,
         password: form.password,
         is_active: true,
-      }).then((user) => alert("Registration successful!"));
+      }).then((user) => {
+        alert("Registration successful!");
+        router.push("login");
+      });
     }
   };
 
@@ -117,7 +122,7 @@ export default function RegisterPage() {
           </div>
           <button
             type="submit"
-            className="w-full rounded bg-blue-600 px-4 py-2 font-semibold text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full rounded bg-primary px-4 py-2 font-semibold text-white shadow hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Register
           </button>
@@ -129,7 +134,7 @@ export default function RegisterPage() {
           <span className="text-gray-600">Already have an account?</span>
           <a
             href="/auth/login"
-            className="ml-2 inline-block rounded bg-gray-100 px-4 py-2 text-blue-700 font-semibold shadow hover:bg-blue-50 hover:text-blue-900 transition-colors"
+            className="ml-2 inline-block rounded bg-gray-100 px-4 py-2 text-primary-600 font-semibold shadow hover:bg-primary-50 hover:text-primary-900 transition-colors"
           >
             Login
           </a>
