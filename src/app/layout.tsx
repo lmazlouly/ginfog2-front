@@ -19,8 +19,8 @@ const sarabun = Sarabun({
 });
 
 export const metadata: Metadata = {
-  title: "Marzano",
-  description: "Marzano Research - App for Teacher As a Researcher",
+  title: "EcoSys",
+  description: "EcoSys Research - App for Teacher As a Researcher",
   icons: {
     icon: "/marzazno-icon.png",
   }

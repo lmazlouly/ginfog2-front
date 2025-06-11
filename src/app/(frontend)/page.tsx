@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Marzano Research | Teacher as Researcher Platform",
+  title: "EcoSys ",
   description: "Explore evidence-based teaching strategies for your classroom",
 };
 
 export default function HomePage() {
   return (
     <main className="container mx-auto p-6 text-center">
-      <h1 className="text-4xl font-bold mb-4">Welcome to Marzano Research</h1>
+      <h1 className="text-4xl font-bold mb-4">Welcome to EcoSys Research</h1>
       <p className="mb-6 text-lg">
         Discover evidence-based teaching strategies to enhance your classroom.
       </p>

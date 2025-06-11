@@ -84,7 +84,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader className="flex items-center justify-center h-16 from-purple-600 to-indigo-500 pt-10">
         <Image 
           src="https://marzanoresearch.com/wp-content/uploads/2020/06/marzano-research-logo.png"
-          alt="Marzano Research Logo"
+          alt="EcoSys Research Logo"
           width="200"
           height="50"
         />
