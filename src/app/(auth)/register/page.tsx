@@ -3,6 +3,7 @@
 import { register } from "@/lib/api/generated/auth/auth";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { createWasteReport } from "@/lib/api/generated/waste-reports/waste-reports";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -10,11 +11,12 @@ export default function RegisterPage() {
     name: "",
     email: "",
     password: "",
+
     confirmPassword: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [submitted, setSubmitted] = useState(false);
-
+createWasteReport
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
     if (!form.name.trim()) newErrors.name = "Name is required.";
@@ -41,7 +43,7 @@ export default function RegisterPage() {
     const validationErrors = validate();
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length === 0) {
-      setSubmitted(true);
+      
       // TODO: Integrate with backend registration logic here
       register({
         email: form.email,
@@ -49,7 +51,7 @@ export default function RegisterPage() {
         password: form.password,
         is_active: true,
       }).then((user) => {
-        alert("Registration successful!");
+        setSubmitted(true);
         router.push("login");
       });
     }
@@ -128,15 +130,16 @@ export default function RegisterPage() {
           </button>
         </form>
         {submitted && (
-          <p className="mt-4 text-center text-green-600">Registration successful! (This is a placeholder message.)</p>
+          <p className="mt-4 text-center text-green-600">Registration successful! redirecting to login...</p>
         )}
         <div className="mt-6 text-center">
           <span className="text-gray-600">Already have an account?</span>
           <a
-            href="/auth/login"
+            href="/login"
             className="ml-2 inline-block rounded bg-gray-100 px-4 py-2 text-primary-600 font-semibold shadow hover:bg-primary-50 hover:text-primary-900 transition-colors"
           >
             Login
+
           </a>
         </div>
       </div>
