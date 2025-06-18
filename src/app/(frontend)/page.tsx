@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "EcoSys ",
+  title: "EcoSys",
   description: "Explore evidence-based teaching strategies for your classroom",
 };
 
