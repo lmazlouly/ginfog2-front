@@ -5,8 +5,40 @@
  * FastAPI Boilerplate with JWT Authentication
  * OpenAPI spec version: 0.1.0
  */
+import type { ReportStatus } from './reportStatus';
+import type { WasteType } from './wasteType';
 
 export type GetWasteReportsParams = {
-skip?: number;
-limit?: number;
+/**
+ * Page number
+ */
+page?: number;
+/**
+ * Items per page
+ */
+size?: number;
+/**
+ * Filter by status
+ */
+status?: ReportStatus | null;
+/**
+ * Filter by waste type
+ */
+waste_type?: WasteType | null;
+/**
+ * Filter from date (YYYY-MM-DD)
+ */
+date_from?: string | null;
+/**
+ * Filter to date (YYYY-MM-DD)
+ */
+date_to?: string | null;
+/**
+ * Sort by field
+ */
+sort_by?: string;
+/**
+ * Sort order
+ */
+sort_order?: string;
 };

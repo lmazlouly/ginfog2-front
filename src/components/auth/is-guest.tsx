@@ -8,11 +8,11 @@ import { User } from '@/lib/api/models';
 const isGuest = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
   const GuestComponent = (props: P) => {
     const router = useRouter();
-    const { user, isAuthenticated } = useAuth();
+    const { user, checkAuth } = useAuth();
     
     useEffect(() => {
       const checkUser = async () => {
-        const isAuthenticatedRes: User = (await isAuthenticated() as User);
+        const isAuthenticatedRes = (await checkAuth()) as User;
         if (isAuthenticatedRes) {
           router.push(isAuthenticatedRes.is_superuser ? "/dashboard" : "/");
         }

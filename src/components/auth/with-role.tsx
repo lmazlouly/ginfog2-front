@@ -16,13 +16,13 @@ const withRole = <P extends object>(
   requiredRole: string
 ) => {
   const RoleRestrictedComponent = (props: P) => {
-    const { user, isAuthenticated, login } = useAuth();
+    const { user, checkAuth, login } = useAuth();
     const [loading, setLoading] = useState(true);
     
     useEffect(() => {
       const checkUserRole = async () => {
-        const isAuthenticatedRes = await isAuthenticated();
-        if (isAuthenticatedRes) {
+        const isAuthenticatedRes = await checkAuth();
+        if (!isAuthenticatedRes) {
           await login();
         }
         setLoading(false);
@@ -46,7 +46,7 @@ const withRole = <P extends object>(
     }
     
     // Check if user exists and has the required role
-    if (user && user!.id && user.role.name === requiredRole) {
+    if (user && user!.id && user.is_superuser) {
       return <WrappedComponent {...props} />;
     }
     

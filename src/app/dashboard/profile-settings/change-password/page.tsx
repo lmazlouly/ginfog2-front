@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { useBreadcrumbs } from "@/contexts/breadcrumb-context";
-import { putApiAuthChangePassword } from "@/lib/api/generated/default/default";
+import { changePassword } from "@/lib/api/generated/auth/auth";
 
 export default function ChangePasswordPage() {
   const router = useRouter();
@@ -28,10 +28,10 @@ export default function ChangePasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await putApiAuthChangePassword({
-        oldPassword,
-        newPassword,
-        newPasswordConfirmation,
+      await changePassword({
+        old_password: oldPassword,
+        new_password: newPassword,
+        new_password_confirmation: newPasswordConfirmation,
       });
 
       toast({

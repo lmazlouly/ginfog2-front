@@ -29,10 +29,12 @@ import type {
 } from '@tanstack/react-query'
 import type {
   BodyLogin,
+  ChangePasswordRequest,
   HTTPValidationError,
   Token,
   User,
-  UserCreate
+  UserCreate,
+  UserUpdate
 } from '../../models'
 import { api } from '../../../../api/mutator/axiosInstance';
 
@@ -336,6 +338,69 @@ export function useGetMe<TData = Awaited<ReturnType<typeof getMe>>, TError = unk
 
 
 /**
+ * Update current user information
+ * @summary Update Users Me
+ */
+export const updateProfile = (
+    userUpdate: UserUpdate,
+ ) => {
+      
+      
+      return api<User>(
+      {url: `/auth/me`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: userUpdate
+    },
+      );
+    }
+  
+
+
+export const getUpdateProfileMutationOptions = <TData = Awaited<ReturnType<typeof updateProfile>>, TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{data: UserUpdate}, TContext>, }
+) => {
+const mutationKey = ['updateProfile'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateProfile>>, {data: UserUpdate}> = (props) => {
+          const {data} = props ?? {};
+
+          return  updateProfile(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{data: UserUpdate}, TContext>}
+
+    export type UpdateProfileMutationResult = NonNullable<Awaited<ReturnType<typeof updateProfile>>>
+    export type UpdateProfileMutationBody = UserUpdate
+    export type UpdateProfileMutationError = HTTPValidationError
+
+    /**
+ * @summary Update Users Me
+ */
+export const useUpdateProfile = <TData = Awaited<ReturnType<typeof updateProfile>>, TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{data: UserUpdate}, TContext>, }
+): UseMutationResult<
+        TData,
+        TError,
+        {data: UserUpdate},
+        TContext
+      > => {
+
+      const mutationOptions = getUpdateProfileMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
  * Logout user by clearing the cookie
  * @summary Logout
  */
@@ -394,6 +459,70 @@ export const useLogout = <TData = Awaited<ReturnType<typeof logout>>, TError = u
       > => {
 
       const mutationOptions = getLogoutMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
+ * Change current user password
+ * @summary Change Password
+ */
+export const changePassword = (
+    changePasswordRequest: ChangePasswordRequest,
+ signal?: AbortSignal
+) => {
+      
+      
+      return api<unknown>(
+      {url: `/auth/change-password`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: changePasswordRequest, signal
+    },
+      );
+    }
+  
+
+
+export const getChangePasswordMutationOptions = <TData = Awaited<ReturnType<typeof changePassword>>, TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{data: ChangePasswordRequest}, TContext>, }
+) => {
+const mutationKey = ['changePassword'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof changePassword>>, {data: ChangePasswordRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  changePassword(data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{data: ChangePasswordRequest}, TContext>}
+
+    export type ChangePasswordMutationResult = NonNullable<Awaited<ReturnType<typeof changePassword>>>
+    export type ChangePasswordMutationBody = ChangePasswordRequest
+    export type ChangePasswordMutationError = HTTPValidationError
+
+    /**
+ * @summary Change Password
+ */
+export const useChangePassword = <TData = Awaited<ReturnType<typeof changePassword>>, TError = HTTPValidationError,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{data: ChangePasswordRequest}, TContext>, }
+): UseMutationResult<
+        TData,
+        TError,
+        {data: ChangePasswordRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getChangePasswordMutationOptions(options);
 
       return useMutation(mutationOptions);
     }

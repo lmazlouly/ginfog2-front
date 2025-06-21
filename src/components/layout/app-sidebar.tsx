@@ -21,47 +21,47 @@ import Link from "next/link";
 import { useAuth } from "@/providers/auth-provider";
 
 const navItems = [
-  {
-    category: "Geography Setup",
-    role: 'super-admin',
-    items: [
-      { name: "States", href: "/dashboard/configs/states-management", icon: MapPin },
-      { name: "Districts", href: "/dashboard/configs/districts-management", icon: Flag },
-      { name: "Schools", href: "/dashboard/configs/schools-management", icon: Home },
-    ],
-  },
-  {
-    category: "Academic Structure",
-    role: 'super-admin',
-    items: [
-      { name: "Grades", href: "/dashboard/configs/grades-management", icon: Layers },
-      { name: "Content Areas", href: "/dashboard/configs/content-areas-management", icon: Book },
-      { name: "Learning Standards", href: "/dashboard/configs/learning-standards-management", icon: BookOpen },
-      { name: "Teaching Standards", href: "/dashboard/configs/teaching-standards-management", icon: GraduationCap },
-    ],
-  },
-  {
-    category: "Research & Evidence",
-    role: 'super-admin',
-    items: [
-      { name: "Levels Of Evidence", href: "/dashboard/configs/levels-of-evidence-management", icon: BarChart3 },
-      { name: "Recommendations", href: "/dashboard/configs/recommendations-management", icon: ThumbsUp },
-    ],
-  },
-  {
-    category: "Strategy Tools",
-    role: 'super-admin',
-    items: [
-      { name: "Strategies", href: "/dashboard/configs/strategies-management", icon: Target },
-    ],
-  },
-  {
-    category: "Users Setup",
-    role: 'super-admin',
-    items: [
-      { name: "Teachers Management", href: "/dashboard/users-setup/teachers-management", icon: Briefcase },
-    ],
-  },
+  // {
+  //   category: "Geography Setup",
+  //   role: 'super-admin',
+  //   items: [
+  //     { name: "States", href: "/dashboard/configs/states-management", icon: MapPin },
+  //     { name: "Districts", href: "/dashboard/configs/districts-management", icon: Flag },
+  //     { name: "Schools", href: "/dashboard/configs/schools-management", icon: Home },
+  //   ],
+  // },
+  // {
+  //   category: "Academic Structure",
+  //   role: 'super-admin',
+  //   items: [
+  //     { name: "Grades", href: "/dashboard/configs/grades-management", icon: Layers },
+  //     { name: "Content Areas", href: "/dashboard/configs/content-areas-management", icon: Book },
+  //     { name: "Learning Standards", href: "/dashboard/configs/learning-standards-management", icon: BookOpen },
+  //     { name: "Teaching Standards", href: "/dashboard/configs/teaching-standards-management", icon: GraduationCap },
+  //   ],
+  // },
+  // {
+  //   category: "Research & Evidence",
+  //   role: 'super-admin',
+  //   items: [
+  //     { name: "Levels Of Evidence", href: "/dashboard/configs/levels-of-evidence-management", icon: BarChart3 },
+  //     { name: "Recommendations", href: "/dashboard/configs/recommendations-management", icon: ThumbsUp },
+  //   ],
+  // },
+  // {
+  //   category: "Strategy Tools",
+  //   role: 'super-admin',
+  //   items: [
+  //     { name: "Strategies", href: "/dashboard/configs/strategies-management", icon: Target },
+  //   ],
+  // },
+  // {
+  //   category: "Users Setup",
+  //   role: 'super-admin',
+  //   items: [
+  //     { name: "Teachers Management", href: "/dashboard/users-setup/teachers-management", icon: Briefcase },
+  //   ],
+  // },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -82,12 +82,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return ( user &&
     <Sidebar className="fixed top-0 left-0 h-screen w-60 bg-white dark:bg-gray-800 shadow-md flex flex-col" {...props}>
       <SidebarHeader className="flex items-center justify-center h-16 from-purple-600 to-indigo-500 pt-10">
-        <Image 
-          src="https://marzanoresearch.com/wp-content/uploads/2020/06/marzano-research-logo.png"
-          alt="EcoSys Research Logo"
-          width="200"
-          height="50"
-        />
+      <div className="flex items-center gap-3 justify-center" >
+            <Link href="/" className="flex items-center gap-2">
+              <div className="text-green-600 w-8 h-8" >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M21.86 9.03c-.4-.9-1.3-1.5-2.3-1.6h-.8C18.46 5.13 16.36 3 13.56 3c-2.5 0-4.6 1.9-4.9 4.4-1.5.3-2.7 1.5-3 3-.9.1-1.6.6-2 1.4-.5.8-.5 1.8-.1 2.6.4.9 1.3 1.5 2.3 1.6h13.2c1 0 2-.5 2.6-1.4.6-.9.7-1.9.2-2.9v-2.7zM7.76 15h-1.5c-.4 0-.8-.3-1-.7-.2-.4-.1-.8.1-1.2.2-.3.6-.6 1-.6v-.5c.2-1.1 1.2-1.9 2.3-1.9.4-3.7 8.6-3.7 9.1.3 1.3-.2 2.5.7 2.7 1.9.1.5 0 .9-.2 1.3-.2.4-.5.7-.9.7h-11.6z" />
+                  <path d="M18.26 15.7c-3.2 2.7-8.4 2.3-11.2-.7-2.1-2.2-2.6-5.3-1.5-7.9l1 .3c-1 2.3-.5 5.1 1.3 7 2.4 2.6 7 2.8 9.6.6.3-.2.5-.5.8-.7l.8.7c-.3.2-.5.5-.8.7z" />
+                </svg>
+              </div>
+              <span className="text-xl font-bold tracking-tight text-green-800">EcoSys</span>
+            </Link>
+          </div>
       </SidebarHeader>
 
       <SidebarContent className="flex-1 p-4 overflow-y-auto mt-4">

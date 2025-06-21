@@ -7,10 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/providers/auth-provider";
-import { putApiAuthUpdateProfile } from "@/lib/api/generated/default/default";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, AtSign, Mail } from "lucide-react";
+import { updateProfile } from "@/lib/api/generated/auth/auth";
 
 export default function ProfileSettingsPage() {
   const router = useRouter();
@@ -28,7 +28,6 @@ export default function ProfileSettingsPage() {
     if (user) {
       setEmail(user.email || "");
       setUsername(user.username || "");
-      setName(user.name || "");
     }
   }, [user]);
 
@@ -37,10 +36,9 @@ export default function ProfileSettingsPage() {
     setIsSubmitting(true);
 
     try {
-      await putApiAuthUpdateProfile({
+      await updateProfile({
         email,
         username,
-        name,
         password: currentPassword,
       });
 
@@ -91,10 +89,10 @@ export default function ProfileSettingsPage() {
         {/* User avatar section */}
         <div className="md:w-1/3">
           <div className="flex flex-col items-center space-y-4">
-            <Avatar className="h-24 w-24">
-              <AvatarImage src={user?.avatar} alt={name} />
+            {/* <Avatar className="h-24 w-24">
+              <AvatarImage src={user?.username} alt={name} />
               <AvatarFallback className="text-lg">{getInitials()}</AvatarFallback>
-            </Avatar>
+            </Avatar> */}
             <div className="text-center">
               <h3 className="font-medium">{name || username}</h3>
               <p className="text-sm text-muted-foreground">{email}</p>

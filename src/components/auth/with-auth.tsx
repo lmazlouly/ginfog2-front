@@ -7,11 +7,11 @@ import { useAuth } from '@/providers/auth-provider';
 const withAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
   const AuthenticatedComponent = (props: P) => {
     const router = useRouter();
-    const { user, isAuthenticated, login } = useAuth();
+    const { user, checkAuth, login } = useAuth();
     
     useEffect(() => {
       const checkUser = async () => {
-        const isAuthenticatedRes = await isAuthenticated();
+        const isAuthenticatedRes = await checkAuth();
         if (!isAuthenticatedRes) {
           router.push('/login');
         } else {

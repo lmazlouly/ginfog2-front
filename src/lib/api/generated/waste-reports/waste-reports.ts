@@ -28,30 +28,56 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query'
 import type {
+  BodyCreateWasteReport,
+  BodyUpdateWasteReport,
   GetWasteReportsParams,
   HTTPValidationError,
-  WasteReport,
-  WasteReportCreate,
-  WasteReportUpdate
+  WasteReportList,
+  WasteReportResponse,
+  WasteTypesResponse
 } from '../../models'
 import { api } from '../../../../api/mutator/axiosInstance';
 
 
 
 /**
- * Create a new waste report
+ * Create a new waste report with optional photo uploads.
+Rate limited to 10 reports per day per user.
  * @summary Create Waste Report
  */
 export const createWasteReport = (
-    wasteReportCreate: WasteReportCreate,
+    bodyCreateWasteReport: BodyCreateWasteReport,
  signal?: AbortSignal
 ) => {
       
-      
-      return api<WasteReport>(
+      const formData = new FormData();
+formData.append('street_address', bodyCreateWasteReport.street_address)
+formData.append('city', bodyCreateWasteReport.city)
+formData.append('postal_code', bodyCreateWasteReport.postal_code)
+if(bodyCreateWasteReport.latitude !== undefined && bodyCreateWasteReport.latitude !== null) {
+ formData.append('latitude', bodyCreateWasteReport.latitude.toString())
+ }
+if(bodyCreateWasteReport.longitude !== undefined && bodyCreateWasteReport.longitude !== null) {
+ formData.append('longitude', bodyCreateWasteReport.longitude.toString())
+ }
+formData.append('waste_type', bodyCreateWasteReport.waste_type)
+formData.append('quantity_estimate', bodyCreateWasteReport.quantity_estimate)
+formData.append('urgency_level', bodyCreateWasteReport.urgency_level)
+if(bodyCreateWasteReport.description !== undefined && bodyCreateWasteReport.description !== null) {
+ formData.append('description', bodyCreateWasteReport.description)
+ }
+formData.append('reporter_name', bodyCreateWasteReport.reporter_name)
+if(bodyCreateWasteReport.reporter_phone !== undefined && bodyCreateWasteReport.reporter_phone !== null) {
+ formData.append('reporter_phone', bodyCreateWasteReport.reporter_phone)
+ }
+if(bodyCreateWasteReport.photos !== undefined) {
+ bodyCreateWasteReport.photos.forEach(value => formData.append('photos', value));
+ }
+
+      return api<WasteReportResponse>(
       {url: `/waste-reports`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: wasteReportCreate, signal
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
     },
       );
     }
@@ -59,7 +85,7 @@ export const createWasteReport = (
 
 
 export const getCreateWasteReportMutationOptions = <TData = Awaited<ReturnType<typeof createWasteReport>>, TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{data: WasteReportCreate}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{data: BodyCreateWasteReport}, TContext>, }
 ) => {
 const mutationKey = ['createWasteReport'];
 const {mutation: mutationOptions} = options ?
@@ -71,7 +97,7 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createWasteReport>>, {data: WasteReportCreate}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createWasteReport>>, {data: BodyCreateWasteReport}> = (props) => {
           const {data} = props ?? {};
 
           return  createWasteReport(data,)
@@ -80,21 +106,21 @@ const {mutation: mutationOptions} = options ?
         
 
 
-  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{data: WasteReportCreate}, TContext>}
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{data: BodyCreateWasteReport}, TContext>}
 
     export type CreateWasteReportMutationResult = NonNullable<Awaited<ReturnType<typeof createWasteReport>>>
-    export type CreateWasteReportMutationBody = WasteReportCreate
+    export type CreateWasteReportMutationBody = BodyCreateWasteReport
     export type CreateWasteReportMutationError = HTTPValidationError
 
     /**
  * @summary Create Waste Report
  */
 export const useCreateWasteReport = <TData = Awaited<ReturnType<typeof createWasteReport>>, TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{data: WasteReportCreate}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{data: BodyCreateWasteReport}, TContext>, }
 ): UseMutationResult<
         TData,
         TError,
-        {data: WasteReportCreate},
+        {data: BodyCreateWasteReport},
         TContext
       > => {
 
@@ -103,9 +129,8 @@ export const useCreateWasteReport = <TData = Awaited<ReturnType<typeof createWas
       return useMutation(mutationOptions);
     }
     /**
- * Retrieve waste reports.
-Regular users get only their reports, superusers get all reports.
- * @summary Read Waste Reports
+ * Get user's waste reports with filtering, pagination, and sorting.
+ * @summary Get Waste Reports
  */
 export const getWasteReports = (
     params?: GetWasteReportsParams,
@@ -113,7 +138,7 @@ export const getWasteReports = (
 ) => {
       
       
-      return api<WasteReport[]>(
+      return api<WasteReportList>(
       {url: `/waste-reports`, method: 'GET',
         params, signal
     },
@@ -173,7 +198,7 @@ export function useGetWasteReportsInfinite<TData = InfiniteData<Awaited<ReturnTy
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Read Waste Reports
+ * @summary Get Waste Reports
  */
 
 export function useGetWasteReportsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getWasteReports>>, GetWasteReportsParams['cursor']>, TError = HTTPValidationError>(
@@ -239,7 +264,7 @@ export function useGetWasteReports<TData = Awaited<ReturnType<typeof getWasteRep
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Read Waste Reports
+ * @summary Get Waste Reports
  */
 
 export function useGetWasteReports<TData = Awaited<ReturnType<typeof getWasteReports>>, TError = HTTPValidationError>(
@@ -259,44 +284,44 @@ export function useGetWasteReports<TData = Awaited<ReturnType<typeof getWasteRep
 
 
 /**
- * Get waste report by ID.
-Regular users can only access their own reports, superusers can access any report.
- * @summary Read Waste Report
+ * Get a specific waste report by ID.
+Users can only access their own reports unless they are admin.
+ * @summary Get Waste Report
  */
 export const getWasteReport = (
-    wasteReportId: number,
+    reportId: number,
  signal?: AbortSignal
 ) => {
       
       
-      return api<WasteReport>(
-      {url: `/waste-reports/${wasteReportId}`, method: 'GET', signal
+      return api<WasteReportResponse>(
+      {url: `/waste-reports/${reportId}`, method: 'GET', signal
     },
       );
     }
   
 
-export const getGetWasteReportQueryKey = (wasteReportId: number,) => {
-    return [`/waste-reports/${wasteReportId}`] as const;
+export const getGetWasteReportQueryKey = (reportId: number,) => {
+    return [`/waste-reports/${reportId}`] as const;
     }
 
     
-export const getGetWasteReportInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getWasteReport>>>, TError = HTTPValidationError>(wasteReportId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>>, }
+export const getGetWasteReportInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getWasteReport>>>, TError = HTTPValidationError>(reportId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetWasteReportQueryKey(wasteReportId);
+  const queryKey =  queryOptions?.queryKey ?? getGetWasteReportQueryKey(reportId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWasteReport>>> = ({ signal }) => getWasteReport(wasteReportId, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWasteReport>>> = ({ signal }) => getWasteReport(reportId, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, enabled: !!(wasteReportId),  staleTime: 10000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(reportId),  staleTime: 10000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetWasteReportInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getWasteReport>>>
@@ -304,7 +329,7 @@ export type GetWasteReportInfiniteQueryError = HTTPValidationError
 
 
 export function useGetWasteReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getWasteReport>>>, TError = HTTPValidationError>(
- wasteReportId: number, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>> & Pick<
+ reportId: number, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getWasteReport>>,
           TError,
@@ -314,7 +339,7 @@ export function useGetWasteReportInfinite<TData = InfiniteData<Awaited<ReturnTyp
 
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetWasteReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getWasteReport>>>, TError = HTTPValidationError>(
- wasteReportId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>> & Pick<
+ reportId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getWasteReport>>,
           TError,
@@ -324,19 +349,19 @@ export function useGetWasteReportInfinite<TData = InfiniteData<Awaited<ReturnTyp
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetWasteReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getWasteReport>>>, TError = HTTPValidationError>(
- wasteReportId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>>, }
+ reportId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Read Waste Report
+ * @summary Get Waste Report
  */
 
 export function useGetWasteReportInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getWasteReport>>>, TError = HTTPValidationError>(
- wasteReportId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>>, }
+ reportId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetWasteReportInfiniteQueryOptions(wasteReportId,options)
+  const queryOptions = getGetWasteReportInfiniteQueryOptions(reportId,options)
 
   const query = useInfiniteQuery(queryOptions) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -347,22 +372,22 @@ export function useGetWasteReportInfinite<TData = InfiniteData<Awaited<ReturnTyp
 
 
 
-export const getGetWasteReportQueryOptions = <TData = Awaited<ReturnType<typeof getWasteReport>>, TError = HTTPValidationError>(wasteReportId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>>, }
+export const getGetWasteReportQueryOptions = <TData = Awaited<ReturnType<typeof getWasteReport>>, TError = HTTPValidationError>(reportId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetWasteReportQueryKey(wasteReportId);
+  const queryKey =  queryOptions?.queryKey ?? getGetWasteReportQueryKey(reportId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWasteReport>>> = ({ signal }) => getWasteReport(wasteReportId, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWasteReport>>> = ({ signal }) => getWasteReport(reportId, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, enabled: !!(wasteReportId),  staleTime: 10000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(reportId),  staleTime: 10000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetWasteReportQueryResult = NonNullable<Awaited<ReturnType<typeof getWasteReport>>>
@@ -370,7 +395,7 @@ export type GetWasteReportQueryError = HTTPValidationError
 
 
 export function useGetWasteReport<TData = Awaited<ReturnType<typeof getWasteReport>>, TError = HTTPValidationError>(
- wasteReportId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>> & Pick<
+ reportId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getWasteReport>>,
           TError,
@@ -380,7 +405,7 @@ export function useGetWasteReport<TData = Awaited<ReturnType<typeof getWasteRepo
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetWasteReport<TData = Awaited<ReturnType<typeof getWasteReport>>, TError = HTTPValidationError>(
- wasteReportId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>> & Pick<
+ reportId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getWasteReport>>,
           TError,
@@ -390,19 +415,19 @@ export function useGetWasteReport<TData = Awaited<ReturnType<typeof getWasteRepo
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetWasteReport<TData = Awaited<ReturnType<typeof getWasteReport>>, TError = HTTPValidationError>(
- wasteReportId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>>, }
+ reportId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>>, }
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Read Waste Report
+ * @summary Get Waste Report
  */
 
 export function useGetWasteReport<TData = Awaited<ReturnType<typeof getWasteReport>>, TError = HTTPValidationError>(
- wasteReportId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>>, }
+ reportId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteReport>>, TError, TData>>, }
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetWasteReportQueryOptions(wasteReportId,options)
+  const queryOptions = getGetWasteReportQueryOptions(reportId,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -415,19 +440,56 @@ export function useGetWasteReport<TData = Awaited<ReturnType<typeof getWasteRepo
 
 /**
  * Update a waste report.
-Regular users can only update their own reports, superusers can update any report.
+Users can only edit their own pending reports unless they are admin.
  * @summary Update Waste Report
  */
 export const updateWasteReport = (
-    wasteReportId: number,
-    wasteReportUpdate: WasteReportUpdate,
+    reportId: number,
+    bodyUpdateWasteReport: BodyUpdateWasteReport,
  ) => {
       
-      
-      return api<WasteReport>(
-      {url: `/waste-reports/${wasteReportId}`, method: 'PUT',
-      headers: {'Content-Type': 'application/json', },
-      data: wasteReportUpdate
+      const formData = new FormData();
+if(bodyUpdateWasteReport.street_address !== undefined && bodyUpdateWasteReport.street_address !== null) {
+ formData.append('street_address', bodyUpdateWasteReport.street_address)
+ }
+if(bodyUpdateWasteReport.city !== undefined && bodyUpdateWasteReport.city !== null) {
+ formData.append('city', bodyUpdateWasteReport.city)
+ }
+if(bodyUpdateWasteReport.postal_code !== undefined && bodyUpdateWasteReport.postal_code !== null) {
+ formData.append('postal_code', bodyUpdateWasteReport.postal_code)
+ }
+if(bodyUpdateWasteReport.latitude !== undefined && bodyUpdateWasteReport.latitude !== null) {
+ formData.append('latitude', bodyUpdateWasteReport.latitude.toString())
+ }
+if(bodyUpdateWasteReport.longitude !== undefined && bodyUpdateWasteReport.longitude !== null) {
+ formData.append('longitude', bodyUpdateWasteReport.longitude.toString())
+ }
+if(bodyUpdateWasteReport.waste_type !== undefined && bodyUpdateWasteReport.waste_type !== null) {
+ formData.append('waste_type', bodyUpdateWasteReport.waste_type)
+ }
+if(bodyUpdateWasteReport.quantity_estimate !== undefined && bodyUpdateWasteReport.quantity_estimate !== null) {
+ formData.append('quantity_estimate', bodyUpdateWasteReport.quantity_estimate)
+ }
+if(bodyUpdateWasteReport.urgency_level !== undefined && bodyUpdateWasteReport.urgency_level !== null) {
+ formData.append('urgency_level', bodyUpdateWasteReport.urgency_level)
+ }
+if(bodyUpdateWasteReport.description !== undefined && bodyUpdateWasteReport.description !== null) {
+ formData.append('description', bodyUpdateWasteReport.description)
+ }
+if(bodyUpdateWasteReport.reporter_name !== undefined && bodyUpdateWasteReport.reporter_name !== null) {
+ formData.append('reporter_name', bodyUpdateWasteReport.reporter_name)
+ }
+if(bodyUpdateWasteReport.reporter_phone !== undefined && bodyUpdateWasteReport.reporter_phone !== null) {
+ formData.append('reporter_phone', bodyUpdateWasteReport.reporter_phone)
+ }
+if(bodyUpdateWasteReport.photos !== undefined) {
+ bodyUpdateWasteReport.photos.forEach(value => formData.append('photos', value));
+ }
+
+      return api<WasteReportResponse>(
+      {url: `/waste-reports/${reportId}`, method: 'PUT',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData
     },
       );
     }
@@ -435,7 +497,7 @@ export const updateWasteReport = (
 
 
 export const getUpdateWasteReportMutationOptions = <TData = Awaited<ReturnType<typeof updateWasteReport>>, TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{wasteReportId: number;data: WasteReportUpdate}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{reportId: number;data: BodyUpdateWasteReport}, TContext>, }
 ) => {
 const mutationKey = ['updateWasteReport'];
 const {mutation: mutationOptions} = options ?
@@ -447,30 +509,30 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateWasteReport>>, {wasteReportId: number;data: WasteReportUpdate}> = (props) => {
-          const {wasteReportId,data} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateWasteReport>>, {reportId: number;data: BodyUpdateWasteReport}> = (props) => {
+          const {reportId,data} = props ?? {};
 
-          return  updateWasteReport(wasteReportId,data,)
+          return  updateWasteReport(reportId,data,)
         }
 
         
 
 
-  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{wasteReportId: number;data: WasteReportUpdate}, TContext>}
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{reportId: number;data: BodyUpdateWasteReport}, TContext>}
 
     export type UpdateWasteReportMutationResult = NonNullable<Awaited<ReturnType<typeof updateWasteReport>>>
-    export type UpdateWasteReportMutationBody = WasteReportUpdate
+    export type UpdateWasteReportMutationBody = BodyUpdateWasteReport
     export type UpdateWasteReportMutationError = HTTPValidationError
 
     /**
  * @summary Update Waste Report
  */
 export const useUpdateWasteReport = <TData = Awaited<ReturnType<typeof updateWasteReport>>, TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{wasteReportId: number;data: WasteReportUpdate}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{reportId: number;data: BodyUpdateWasteReport}, TContext>, }
 ): UseMutationResult<
         TData,
         TError,
-        {wasteReportId: number;data: WasteReportUpdate},
+        {reportId: number;data: BodyUpdateWasteReport},
         TContext
       > => {
 
@@ -480,16 +542,16 @@ export const useUpdateWasteReport = <TData = Awaited<ReturnType<typeof updateWas
     }
     /**
  * Delete a waste report.
-Regular users can only delete their own reports, superusers can delete any report.
+Users can only delete their own pending reports unless they are admin.
  * @summary Delete Waste Report
  */
 export const deleteWasteReport = (
-    wasteReportId: number,
+    reportId: number,
  ) => {
       
       
       return api<unknown>(
-      {url: `/waste-reports/${wasteReportId}`, method: 'DELETE'
+      {url: `/waste-reports/${reportId}`, method: 'DELETE'
     },
       );
     }
@@ -497,7 +559,7 @@ export const deleteWasteReport = (
 
 
 export const getDeleteWasteReportMutationOptions = <TData = Awaited<ReturnType<typeof deleteWasteReport>>, TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{wasteReportId: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{reportId: number}, TContext>, }
 ) => {
 const mutationKey = ['deleteWasteReport'];
 const {mutation: mutationOptions} = options ?
@@ -509,16 +571,16 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteWasteReport>>, {wasteReportId: number}> = (props) => {
-          const {wasteReportId} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteWasteReport>>, {reportId: number}> = (props) => {
+          const {reportId} = props ?? {};
 
-          return  deleteWasteReport(wasteReportId,)
+          return  deleteWasteReport(reportId,)
         }
 
         
 
 
-  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{wasteReportId: number}, TContext>}
+  return  { mutationFn, ...mutationOptions } as UseMutationOptions<TData, TError,{reportId: number}, TContext>}
 
     export type DeleteWasteReportMutationResult = NonNullable<Awaited<ReturnType<typeof deleteWasteReport>>>
     
@@ -528,11 +590,11 @@ const {mutation: mutationOptions} = options ?
  * @summary Delete Waste Report
  */
 export const useDeleteWasteReport = <TData = Awaited<ReturnType<typeof deleteWasteReport>>, TError = HTTPValidationError,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{wasteReportId: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<TData, TError,{reportId: number}, TContext>, }
 ): UseMutationResult<
         TData,
         TError,
-        {wasteReportId: number},
+        {reportId: number},
         TContext
       > => {
 
@@ -540,4 +602,158 @@ export const useDeleteWasteReport = <TData = Awaited<ReturnType<typeof deleteWas
 
       return useMutation(mutationOptions);
     }
+    /**
+ * Get available waste types with descriptions.
+Public endpoint - no authentication required.
+ * @summary Get Waste Types
+ */
+export const getWasteTypes = (
     
+ signal?: AbortSignal
+) => {
+      
+      
+      return api<WasteTypesResponse>(
+      {url: `/waste-reports/types`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetWasteTypesQueryKey = () => {
+    return [`/waste-reports/types`] as const;
+    }
+
+    
+export const getGetWasteTypesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getWasteTypes>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteTypes>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetWasteTypesQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWasteTypes>>> = ({ signal }) => getWasteTypes(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: 10000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteTypes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetWasteTypesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getWasteTypes>>>
+export type GetWasteTypesInfiniteQueryError = unknown
+
+
+export function useGetWasteTypesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getWasteTypes>>>, TError = unknown>(
+  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteTypes>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getWasteTypes>>,
+          TError,
+          TData
+        > , 'initialData'
+      >, }
+
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetWasteTypesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getWasteTypes>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteTypes>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getWasteTypes>>,
+          TError,
+          TData
+        > , 'initialData'
+      >, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetWasteTypesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getWasteTypes>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteTypes>>, TError, TData>>, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Waste Types
+ */
+
+export function useGetWasteTypesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getWasteTypes>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getWasteTypes>>, TError, TData>>, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetWasteTypesInfiniteQueryOptions(options)
+
+  const query = useInfiniteQuery(queryOptions) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+export const getGetWasteTypesQueryOptions = <TData = Awaited<ReturnType<typeof getWasteTypes>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteTypes>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetWasteTypesQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWasteTypes>>> = ({ signal }) => getWasteTypes(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn,   staleTime: 10000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getWasteTypes>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetWasteTypesQueryResult = NonNullable<Awaited<ReturnType<typeof getWasteTypes>>>
+export type GetWasteTypesQueryError = unknown
+
+
+export function useGetWasteTypes<TData = Awaited<ReturnType<typeof getWasteTypes>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteTypes>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getWasteTypes>>,
+          TError,
+          TData
+        > , 'initialData'
+      >, }
+
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetWasteTypes<TData = Awaited<ReturnType<typeof getWasteTypes>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteTypes>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getWasteTypes>>,
+          TError,
+          TData
+        > , 'initialData'
+      >, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetWasteTypes<TData = Awaited<ReturnType<typeof getWasteTypes>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteTypes>>, TError, TData>>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Waste Types
+ */
+
+export function useGetWasteTypes<TData = Awaited<ReturnType<typeof getWasteTypes>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getWasteTypes>>, TError, TData>>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetWasteTypesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
